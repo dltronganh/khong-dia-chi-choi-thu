@@ -1,0 +1,349 @@
+/* Placeholder style: readable paper and blocks, mobile first. One accent colour, only for things you can tap. */
+@font-face { font-family: "KDC Hand"; src: url("../fonts/PatrickHand-Regular.ttf") format("truetype"); font-display: swap; }
+@font-face { font-family: "KDC Brother"; src: url("../fonts/DancingScript-VF.ttf") format("truetype"); font-weight: 400 700; font-display: swap; }
+:root {
+  --bg: #2b2925; --desk: #3a3631; --paper: #f3eee3; --paper2: #e6dfd0; --ink: #26221e; --muted: #6d665c;
+  --accent: #2f6f8f; --accent-ink: #fff; --stamp: #a33a2a; --ok: #2f7a43; --line: #cfc6b5;
+  --radius: 10px; --tabh: 60px;
+  font-size: 16px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 1rem/1.5 "Segoe UI", system-ui, -apple-system, Roboto, "Noto Sans", sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+
+.app { max-width: 760px; margin: 0 auto; min-height: 100%; padding: 0 0 calc(var(--tabh) + 16px); }
+.topbar { position: sticky; top: 0; z-index: 5; background: var(--bg); color: var(--paper);
+  padding: 10px 16px; display: flex; align-items: baseline; gap: 10px; border-bottom: 1px solid #4a453e; }
+.topbar h1 { font-size: 1.05rem; margin: 0; font-weight: 600; }
+.topbar .sub { color: #b9b1a3; font-size: .85rem; }
+.view { padding: 14px 16px; }
+.view h2 { color: var(--paper); font-size: 1rem; margin: 6px 0 10px; font-weight: 600; }
+.hint-line { color: #b9b1a3; font-size: .9rem; margin: 0 0 12px; }
+
+/* Desk: object tiles */
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 560px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+.tile { background: var(--paper2); border: 0; border-radius: var(--radius); padding: 12px; text-align: left;
+  min-height: 96px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 0 #0004; }
+.tile b { font-size: .98rem; }
+.tile span { color: var(--muted); font-size: .82rem; }
+.tile.new { outline: 2px solid var(--accent); }
+.tile.box { background: #c9b48f; }
+.tile.slip { background: #dfe7ea; }
+
+/* Tab bar */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; height: var(--tabh); background: #1f1d1a;
+  display: flex; justify-content: center; border-top: 1px solid #4a453e; padding-bottom: env(safe-area-inset-bottom); }
+.tabs .inner { display: flex; width: 100%; max-width: 760px; }
+.tab { flex: 1; background: none; border: 0; color: #b9b1a3; font-size: .85rem; position: relative; }
+.tab.active { color: var(--paper); box-shadow: inset 0 3px 0 var(--accent); }
+.badge { position: absolute; top: 8px; margin-left: 4px; background: var(--accent); color: #fff; border-radius: 9px;
+  font-size: .7rem; padding: 0 6px; line-height: 18px; }
+
+/* Overlay sheet for reading an object */
+.sheet { position: fixed; inset: 0; z-index: 20; background: #000a; display: flex; justify-content: center; }
+.sheet .panel { background: var(--desk); width: 100%; max-width: 760px; height: 100%; overflow-y: auto; padding: 0 0 24px; }
+.sheet .bar { position: sticky; top: 0; background: var(--desk); display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-bottom: 1px solid #4a453e; color: var(--paper); z-index: 2; }
+.sheet .bar b { flex: 1; font-weight: 600; }
+.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 10px 14px; min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--paper); border: 1px solid #6d665c; }
+.btn.small { padding: 6px 10px; min-height: 36px; font-size: .9rem; }
+.sheet .body { padding: 14px 16px; display: grid; gap: 12px; }
+
+/* Paper documents */
+.paper { background: var(--paper); border-radius: 4px; padding: 16px; box-shadow: 0 3px 0 #0005; }
+.paper p { margin: 0 0 .7em; }
+.paper .hand { font-family: "KDC Hand", cursive; font-size: 1.08rem; }
+.paper .stamp { display: inline-block; color: var(--stamp); border: 2px solid var(--stamp); border-radius: 4px;
+  padding: 2px 8px; font-weight: 700; transform: rotate(-3deg); margin: 4px 0 10px; }
+.paper .brother { font-family: "KDC Brother", cursive; font-size: 1.15rem; transform: rotate(-1deg); color: #1f3550; }
+.paper .brother::before { content: "✎ "; color: var(--muted); font-size: .75rem; }
+.paper .smudge { color: var(--muted); font-style: italic; }
+.paper .pencil { color: #555; font-family: "KDC Hand", cursive; }
+.paper .meta { color: var(--muted); font-size: .85rem; }
+.term { border-bottom: 2px dotted var(--accent); }
+.box-items { display: grid; gap: 10px; }
+
+/* Ledger */
+.search { display: flex; gap: 8px; }
+.search input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+.entry { border-top: 1px dashed var(--line); padding-top: 10px; margin-top: 10px; }
+.entry .no { font-weight: 700; margin-right: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { background: #e4ecef; border: 1px solid #b7c9d1; color: var(--ink); border-radius: 14px; padding: 4px 10px; font-size: .85rem; min-height: 32px; }
+
+/* Calendar and provinces */
+.station { display: grid; gap: 6px; }
+.station h3 { margin: 0; font-size: 1rem; }
+.art svg { width: 100%; height: auto; display: block; background: #ddd5c4; border-radius: 4px; }
+.station .art svg { max-width: 260px; }
+table.prov { width: 100%; border-collapse: collapse; font-size: .9rem; }
+table.prov td, table.prov th { border-bottom: 1px solid var(--line); padding: 6px 4px; vertical-align: top; text-align: left; }
+@media (max-width: 480px) {
+  table.prov thead { display: none; }
+  table.prov tr { display: block; border-bottom: 1px solid var(--line); padding: 6px 0; }
+  table.prov td { display: block; border: 0; padding: 1px 0; }
+  table.prov td::before { content: attr(data-col) ": "; color: var(--muted); font-size: .8rem; }
+}
+
+/* Phone */
+.threads { display: grid; gap: 8px; }
+.thread-btn { background: var(--paper2); border: 0; border-radius: var(--radius); padding: 12px; text-align: left; display: flex; gap: 8px; align-items: center; }
+.thread-btn b { flex: 1; }
+.chat { display: grid; gap: 8px; }
+.msg { max-width: 86%; padding: 8px 12px; border-radius: 14px; background: var(--paper); }
+.msg .who { display: block; font-size: .75rem; color: var(--muted); }
+.msg.me { justify-self: end; background: #d6e6ee; }
+.msg.photo { padding: 8px; }
+.msg.photo .art svg { max-width: 300px; }
+.typing { color: #b9b1a3; font-size: .85rem; font-style: italic; }
+.ask { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Notebook */
+textarea.notes { width: 100%; min-height: 140px; border-radius: 8px; border: 1px solid var(--line); padding: 10px; background: #fffdf8; }
+
+/* Slip */
+.field { display: grid; gap: 4px; margin-bottom: 14px; }
+.field label { font-weight: 600; font-size: .95rem; }
+.field .field-sub { margin: -2px 0 2px; }
+.field input { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; min-height: 44px; }
+.feedback { margin-top: 10px; font-weight: 600; }
+.feedback.ok { color: var(--ok); }
+
+/* Ending */
+.frame { background: var(--paper); border: 2px dashed #8d8577; border-radius: 6px; padding: 12px; }
+.frame .scene { color: var(--muted); font-style: italic; margin: 0 0 6px; }
+.frame p { margin: 0 0 4px; }
+.shelf { background: var(--paper2); border-radius: var(--radius); padding: 12px; }
+.intro p { color: var(--paper); }
+.small { font-size: .85rem; color: #b9b1a3; }
+/* Small filled buttons keep white text like every other button (the muted ".small" colour made them look locked). */
+.btn.small:not(.ghost) { color: var(--accent-ink); font-weight: 600; }
+/* Language switch in the top bar; name note on the intro (English version) */
+.topbar .lang { margin-left: auto; font-size: .85rem; }
+.lang-link { color: #9fc6da; text-decoration: underline; padding: 6px 2px; }
+.names { font-size: .9rem; margin: 0 0 16px; }
+.intro .names p { color: var(--ink); }
+.names p { margin: 4px 0; }
+
+/* ---------- three-stage slip loop ---------- */
+.app { padding-bottom: calc(var(--tabh) + 170px); }
+.sheet .panel { padding-bottom: 190px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.btn.ghost.dark { color: var(--ink); border-color: var(--line); }
+
+/* Tín's sticky note "Việc bây giờ" */
+.note { background: #f4e27a; color: var(--ink); border-radius: 3px; padding: 10px 12px 8px; margin: 0 0 12px;
+  transform: rotate(-.6deg); box-shadow: 0 3px 0 #0005; font-family: "KDC Hand", cursive; font-size: 1.08rem; }
+.note p { margin: 0; }
+.note-title { display: block; font-family: "Segoe UI", system-ui, sans-serif; font-size: .72rem; letter-spacing: .04em;
+  text-transform: uppercase; color: #6b5b16; }
+.bubbles { margin: 0 0 12px; gap: 6px; }
+.bubbles .msg { font-size: .9rem; padding: 6px 10px; line-height: 1.4; }
+
+/* The parcel with its red tag */
+.parcel { width: 100%; background: #c9b48f; border: 0; border-radius: var(--radius); padding: 16px; text-align: left;
+  min-height: 120px; display: grid; gap: 4px; align-content: start; box-shadow: 0 2px 0 #0004; margin: 0 0 12px; position: relative; }
+.parcel b { font-size: 1.05rem; }
+.parcel span { color: #4d4537; font-size: .85rem; }
+.parcel .tag { justify-self: start; margin-top: 8px; background: var(--stamp); color: #fff; font-weight: 700; padding: 4px 10px;
+  border-radius: 3px; transform: rotate(-2deg); font-size: .85rem; }
+.parcel .tag.go { background: var(--ok); }
+.parcel.new, .tile.new { outline: 2px solid var(--accent); animation: glow 1.6s ease-in-out 2; }
+@keyframes glow { 50% { outline-color: #9fd3ea; outline-offset: 3px; } }
+.tile.dim { opacity: .55; }
+.tile.wide { width: 100%; min-height: 64px; margin: 0 0 12px; }
+
+/* Words that fit the open slip line */
+.tap { background: #dcebf2; color: inherit; font: inherit; border: 0; border-bottom: 2px dotted var(--accent); padding: 0 2px;
+  border-radius: 3px; cursor: pointer; min-height: 0; }
+.tap:active { background: #b9d9e8; }
+.paper .brotherBold { font-family: "KDC Brother", cursive; font-size: 1.2rem; font-weight: 700; color: #1f3550; }
+.paper .brotherBold::before { content: "✎ "; color: var(--muted); font-size: .75rem; font-weight: 400; }
+
+/* Slip bar, above the tabs (or at the bottom while a document is open) */
+.slipbar { position: fixed; left: 0; right: 0; bottom: var(--tabh); z-index: 25; display: flex; justify-content: center;
+  padding: 0 8px 6px; pointer-events: none; }
+body.sheet-open .slipbar { bottom: 0; }
+.slipbar .inner { pointer-events: auto; width: 100%; max-width: 744px; background: #f3eee3; border-radius: 10px; padding: 6px 10px 8px;
+  box-shadow: 0 -2px 10px #0008; border-top: 3px solid var(--accent); }
+.bar-head { margin: 0; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.bar-line { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+.bar-label { flex: 1; min-width: 0; background: none; border: 0; text-align: left; padding: 2px 0; display: grid; }
+.bar-label b { font-size: .92rem; }
+.bar-label span { font-size: .78rem; color: var(--muted); }
+.blink { animation: blink .5s ease-in-out 4; }
+@keyframes blink { 50% { background: #e0a43a; color: var(--ink); } }
+
+/* Story beats and the confirm card */
+.beat { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; justify-content: center; padding: 8px; pointer-events: none; }
+.beat-card { pointer-events: auto; width: 100%; max-width: 744px; background: var(--paper); border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 -4px 24px #000b; border: 2px solid var(--accent); }
+.beat-card p { margin: 0 0 8px; }
+.beat-card .btn { min-width: 96px; }
+
+/* The slip itself */
+.slip-title { color: var(--ink) !important; margin-top: 0 !important; }
+.recipient { display: flex; gap: 12px; align-items: center; border: 1px dashed var(--line); border-radius: 8px; padding: 8px; margin: 0 0 10px; }
+.recipient p { margin: 0; }
+.silhouette { width: 56px; height: 56px; flex: none; border-radius: 50%; background: radial-gradient(circle at 50% 38%, #8d8577 0 30%, transparent 31%),
+  radial-gradient(ellipse at 50% 100%, #8d8577 0 48%, transparent 49%), #ddd5c4; }
+.art.face { width: 72px; flex: none; }
+.stages { list-style: none; padding: 0; margin: 0 0 12px; display: flex; gap: 4px; font-size: .78rem; }
+.stages li { flex: 1; display: grid; justify-items: center; text-align: center; gap: 2px; color: var(--muted); }
+.stages .dot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--paper2); font-weight: 700; }
+.stages .now { color: var(--ink); font-weight: 600; }
+.stages .now .dot { background: var(--accent); color: #fff; }
+.stages .done .dot { background: var(--ok); color: #fff; }
+.stage { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px; }
+.stage.later { opacity: .6; }
+.line { margin-bottom: 10px; }
+.line p { margin: 0 0 4px; }
+.line .ok { color: var(--ok); font-weight: 700; }
+.line.open { background: #fffdf8; border: 2px solid var(--accent); border-radius: 8px; padding: 10px; }
+.pinned { background: #f4e27a; }
+.pt textarea { font-size: .85rem; }
+
+/* ---------- guidance fixes: where to tap, the two actions the player owns ---------- */
+/* The thing the sticky note points at: a dashed outline, pulsing slowly once (N1) */
+.parcel.target, .tile.target, .thread-btn.target, .btn.target { outline: 2px dashed var(--stamp); outline-offset: 2px; animation: aim 2.4s ease-in-out 1; }
+.tab.target { color: var(--paper); box-shadow: inset 0 -3px 0 var(--stamp); }
+.tab.target::after { content: ""; position: absolute; inset: 6px 10%; border: 2px dashed var(--stamp); border-radius: 8px; pointer-events: none; }
+@keyframes aim { 50% { outline-offset: 6px; } }
+.note-go { margin-top: 8px; font-family: "Segoe UI", system-ui, sans-serif; background: var(--ink); color: #fff; }
+/* The slim sticky note on top of an open sheet (N2) */
+.note.slim { transform: none; padding: 4px 10px; margin: 0; font-size: .98rem; display: grid; gap: 2px; }
+.note-text { background: none; border: 0; padding: 0; min-height: 44px; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+.note.with-go .note-text { min-height: 30px; }
+.note-text span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.note.with-go .note-text span { -webkit-line-clamp: 1; line-clamp: 1; }
+.note .note-text.open span { display: block; overflow: visible; }
+.note.slim .note-go { margin-top: 0; justify-self: start; }
+/* "Send" (N6) */
+.btn.send { background: var(--ok); color: #fff; font-weight: 700; }
+.view > .btn.send { width: 100%; min-height: 52px; margin: 0 0 12px; font-size: 1.05rem; }
+.slipbar .inner.ready { border-top-color: var(--ok); }
+.slip .btn.send { width: 100%; margin: 8px 0; }
+/* Ferry group: the draft waiting to be posted (N9), a sender who remembers her (N4) */
+.draft { display: grid; gap: 8px; margin-top: 10px; background: #fff6; border: 1px dashed #b9b1a3; border-radius: 10px; padding: 10px; }
+.draft .meta { color: var(--paper); margin: 0; font-size: .85rem; }
+.msg.unsent { opacity: .8; border: 1px dashed var(--accent); }
+.mark { margin-left: 6px; color: #fff; background: var(--stamp); border-radius: 8px; padding: 0 6px; font-size: .7rem; }
+.mark::before { content: "● "; font-size: .6rem; }
+.thread-name { flex: 1; display: grid; }
+.thread-name .meta { font-size: .8rem; color: var(--muted); }
+/* Slip bar: one ask button, open lines as chips (N7) */
+.bar-chips { display: flex; gap: 6px; margin-top: 4px; }
+.bar-chips .chip { min-height: 30px; padding: 2px 10px; }
+.chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Grey story panels (version C of the opening) */
+.panel-fig { margin: 0 0 8px; }
+.panel-art svg { display: block; width: 100%; height: auto; border: 2px solid #26221e; border-radius: 4px; background: #d9d5cb; }
+.strip figcaption { background: var(--paper); color: var(--ink); padding: 10px 12px; font-size: 1.1rem; border-radius: 0 0 4px 4px; }
+.strip-nav { align-items: center; margin-bottom: 14px; }
+.strip-nav .go { margin-left: auto; }
+.beat-card .panel-art svg { max-height: 26vh; }
+
+/* Short versions of the opening only (body.v-short): the default version never gets these rules. */
+.beat-card .panel-art svg { width: auto; height: min(26vh, calc((100vw - 64px) * 0.6875)); aspect-ratio: 320 / 220; margin: 0 auto; }   /* keeps its shape: no pale bands at the sides */
+.strip figcaption .beat-words p, .beat-paper p { margin: 0 0 6px; color: var(--ink); }
+.strip figcaption .beat-words p.meta, .beat-paper p.meta { color: var(--muted); font-style: italic; font-size: inherit; }
+.strip figcaption .beat-words p:last-child, .beat-paper p:last-child { margin-bottom: 0; }
+.beat-paper { font-size: 1.1rem; margin-bottom: 8px; }
+.v-short .howto { margin: 0; padding: 8px 12px; border-left: 4px solid var(--accent); background: var(--paper2); color: var(--ink); border-radius: 6px; }
+/* The slip's own moment comes first; its bar shows once that card is gone. */
+.v-short.arrive-on .slipbar { visibility: hidden; }
+/* The slip on the desk shows once that card is gone too: nothing to make out under the card (its place stays, so nothing jumps). */
+.v-short.arrive-on .tile.slip { visibility: hidden; }
+/* Motion only where something changed: the new panel after the player moves on (not the words), and never when the
+   device asks for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-short .panel-fig.fresh .panel-art { animation: kdc-panel-in .25s ease-out; }
+}
+@keyframes kdc-panel-in { from { opacity: 0; } to { opacity: 1; } }
+/* The button that moves the opening on sits on its own line, full width, so it reads as a button. */
+.v-short .strip-nav { flex-wrap: wrap; }
+.v-short .strip-nav .go { order: 3; flex-basis: 100%; margin-left: 0; min-height: 52px; font-size: 1.05rem; font-weight: 700; }
+
+/* ---------- short versions only: readable on a small phone, clear what to press ---------- */
+/* The writer's words read in print; his own hand stays in the whole letter as written (it is a clue there). */
+.v-short .paper:not(.as-written) .brother, .v-short .paper:not(.as-written) .brotherBold {
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Noto Sans", sans-serif; font-size: 1.05rem; line-height: 1.55; transform: none; }
+.v-short .paper:not(.as-written) .brotherBold { font-weight: 700; }
+.v-short .print-note { font-style: italic; border-bottom: 1px dashed var(--line); padding-bottom: 6px; }
+/* The line that says the first act is the player's, right above its button. */
+.v-short .act-lead { order: 2; flex-basis: 100%; margin: 4px 0 0; color: var(--paper); font-weight: 600; font-size: 1rem; }
+/* "Open the box" at the end of the opening: the same full-width button as the ones before it. */
+.v-short .intro > .btn.start { display: block; width: 100%; min-height: 52px; font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; }
+/* Things inside the box and the note's button read as buttons that go somewhere. */
+.v-short .box-items .tile { min-height: 64px; border-left: 6px solid var(--accent); }
+.v-short .box-items .tile b::after { content: "  →"; color: var(--accent); }
+.v-short .note:not(.slim) .note-go { display: block; width: 100%; min-height: 48px; font-size: 1rem; background: var(--accent); }
+/* Tabs say what they hold, in a second line. */
+.tab-name { display: grid; line-height: 1.2; justify-items: center; }
+.tab-sub { font-size: .78rem; color: #d6cebf; }
+.tab.active .tab-sub { color: var(--paper); }
+/* The slip tile on the desk says what its stages are, until the first is done. */
+.tile .stages-said { color: var(--ink); font-size: .92rem; margin-top: 4px; }
+/* The slip's own moment sits in the middle over a dim screen, not at the bottom by the tabs. */
+.v-short.arrive-on .beat { top: 0; align-items: center; background: #000b; pointer-events: auto; }
+/* The lines after the slip's moment talk about the slip: the card sits at the top, the slip and its bar stay in sight below. */
+.v-short.arrive-beside .beat { top: 0; bottom: auto; }
+/* The slip bar stands clear of the tabs: a gap of page colour between them, its own outline. */
+.v-short .slipbar { padding-bottom: 10px; }
+.v-short .slipbar .inner { border: 2px solid var(--accent); border-top-width: 3px; }
+.v-short .bar-head { font-size: .78rem; color: #4d4537; }
+.v-short .tabs { border-top: 2px solid #5b554c; }
+/* Tín's sticky note says what to do: in print too (its yellow paper and tilt stay). */
+.v-short .note { font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Noto Sans", sans-serif; font-size: 1rem; }
+/* Small grey asides on paper (Tín's remarks, "Người nhận:") a touch larger and darker. */
+.v-short .paper .meta { font-size: .92rem; color: #5a5349; }
+/* One line of the letter kept in the writer's own hand, next to Tín's remark on it: large enough to see the loops. */
+.paper .brotherHand { font-family: "KDC Brother", cursive; font-size: 1.45rem; line-height: 1.35; transform: rotate(-1deg); color: #1f3550; }
+/* "Ask Ông Thuận" says who he is, in a second line on the button. */
+.ask-who { display: block; flex-basis: 100%; font-size: .72rem; font-weight: 400; opacity: .85; line-height: 1.2; }
+.v-short .bar-line .ask { max-width: 50%; justify-content: center; text-align: center; row-gap: 2px; }
+/* The line saying who Ông Thuận is reads at phone size. */
+.v-short .ask-who { font-size: .82rem; opacity: 1; line-height: 1.25; }
+/* The page keeps room under its last object for the slip bar's real height (set by main.js), plus the tabs. */
+.v-short .app { padding-bottom: calc(var(--tabh) + var(--barh, 170px) + 24px); }
+/* What the sticky note points at: outlined in the note's own yellow, with a tag saying so. */
+.v-short .parcel.target, .v-short .tile.target, .v-short .thread-btn.target, .v-short .btn.target { outline: 3px solid #f4e27a; }
+.v-short .tab.target::after { border: 2px solid #f4e27a; }
+.aim-tag { justify-self: start; display: inline-block; background: #f4e27a; color: var(--ink); font-size: .72rem; font-weight: 700;
+  padding: 1px 8px; border-radius: 3px; margin-bottom: 4px; align-self: flex-start; }
+/* "Back" sits well apart from the act button below it, and reads as the lesser one. */
+.v-short .strip-nav .btn.ghost { min-height: 36px; font-size: .9rem; }
+.v-short .strip-nav .go { margin-top: 18px; }
+.v-short .strip-nav .act-lead + .go { margin-top: 4px; }
+/* With a sheet open, what lies under it is not shown at all (its buttons are not pressable either: main.js). */
+.v-short.sheet-open .app, .v-short.sheet-open .tabs, .v-short.sheet-open .slipbar { visibility: hidden; }
+/* The end of the letter: "fold" is the one main button and stays in sight at the bottom of the sheet once the letter
+   is read; the whole letter as written is a plain link at the top, never next to it.
+   It is docked below the scrolling page, never over it: the page stops a button's height above the foot (--foldh), so
+   no line of the letter is hidden under the button while scrolling. */
+.v-short { --foldh: 76px; }
+.v-short .btn.fold { position: fixed; bottom: 12px; left: max(16px, calc(50% - 364px)); right: max(16px, calc(50% - 364px));
+  z-index: 21; width: auto; min-height: 52px; font-size: 1.05rem; font-weight: 700; box-shadow: 0 4px 14px #000a; }
+/* Before the slip exists there is no slip bar to leave room for, so the sheet's foot room goes; the strip under the
+   page, where the button sits, takes the desk colour so it reads as part of the sheet. */
+.v-short .sheet .panel:has(.btn.fold) { padding-bottom: 0; height: calc(100% - var(--foldh)); }
+.v-short .sheet:has(.btn.fold) { background: var(--desk); }
+.letter-full { justify-self: start; background: none; border: 0; padding: 8px 0; min-height: 44px; color: #9fc6da;
+  text-decoration: underline; text-align: left; font-size: .95rem; }
+/* Tín's sticky note reads at body size on a phone: the words, its title and the tag on what it points at. */
+.v-short .note { font-size: 1.0625rem; line-height: 1.45; }
+.v-short .note-title { font-size: .875rem; font-weight: 700; color: #574a10; }
+.v-short .aim-tag { font-size: .875rem; }
+/* The guess before the province table: three plain answers, none marked right; Tín's reminder of it above the table. */
+.guess-opts { display: grid; gap: 10px; margin-top: 10px; }
+.guess-said { font-size: .95rem; color: #e9e1d2; margin: 0; }
